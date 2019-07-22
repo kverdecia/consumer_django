@@ -14,6 +14,7 @@ class LoginTestingOAuth2Adapter(OAuth2Adapter):
 
     access_token_url = 'http://localhost:8000/oauth2/token/'
     authorize_url = 'http://localhost:8000/oauth2/authorize/'
+    identity_url = 'http://localhost:8000/identity/'
 
     supports_state = True
 
@@ -23,22 +24,16 @@ class LoginTestingOAuth2Adapter(OAuth2Adapter):
             extra_data)
 
     def get_data(self, token):
-        # Verify the user first
         resp = requests.get(
             self.identity_url,
-            params={'token': token}
+            headers={'Authorization': 'Bearer {}'.format(token)}
         )
         resp = resp.json()
-
         if not resp.get('ok'):
             raise OAuth2Error()
-
-        # Fill in their generic info
         info = {
             'user': resp.get('user'),
-            'team': resp.get('team')
         }
-
         return info
 
 

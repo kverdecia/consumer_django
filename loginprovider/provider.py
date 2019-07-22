@@ -9,14 +9,10 @@ class LoginTestingProvider(OAuth2Provider):
     account_class = ProviderAccount
 
     def extract_uid(self, data):
-        print("extract_uid", repr(data))
-        return "%s_%s" % (str(data.get('team').get('id')),
-            str(data.get('user').get('id')))
+        return data.get('user').get('id')
 
     def extract_common_fields(self, data):
-        print("extract_common_fields", repr(data))
-        return dict(name=data.get('name'),
-            email=data.get('user').get('email', None))
+        return data.get('user')
 
     def get_default_scope(self):
         return ['read', 'write']
